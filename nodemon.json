@@ -1,0 +1,8 @@
+{
+    "watch": [
+        "dist/**/*",
+        ".env"
+    ],
+    "ext": "js,ts,json",
+    "exec": "node dist/server.js"
+}

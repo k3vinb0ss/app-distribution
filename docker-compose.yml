@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: ad_postgres
+    restart: 'unless-stopped'
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - 5432:5432
+    networks:
+      - backend
+  server:
+    build:
+      context: ./
+      target: development-build-stage
+      dockerfile: Dockerfile
+    container_name: ad_server
+    ports:
+      - '3000:3000'
+      - '4000:4000'
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    restart: 'unless-stopped'
+    networks:
+      - backend
+    depends_on:
+      - postgres
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - 3001:80
+    restart: 'unless-stopped'
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=me@sontieu.dev
+      - PGADMIN_DEFAULT_PASSWORD=123456
+    networks:
+      - backend
+    depends_on:
+      - postgres
+networks:
+  backend:
+    driver: bridge
