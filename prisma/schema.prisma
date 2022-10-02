@@ -15,4 +15,36 @@ model User {
   email String  @unique
   password String
   name  String?
+
+  projects Project[]
+}
+
+
+model Project {
+  id String @id @default(uuid())
+  name String 
+  code_name String @unique
+  fullsize_image String?
+  display_image String?
+  owner User @relation(fields: [owner_id], references: [id])
+  owner_id Int
+
+  builds Build[]
+}
+
+model Build {
+  id Int @id @default(autoincrement())
+  version_code Int
+  version_name String
+  platform Platform
+  package_name String
+  path String
+
+  project Project @relation(fields: [project_id], references: [id])
+  project_id String
+}
+
+enum Platform {
+  IOS
+  ANDROID
 }
